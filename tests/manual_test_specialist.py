@@ -8,6 +8,7 @@ This test checks that blockformats look OK and function correctly.
 You should run it in a bash-like shell (that supports ANSI codes).
 
 :copyright: (c) 2021 Devon (scarletcafe) R
+:copyright: (c) 2025 CrystalAlpha358
 :license: MIT, see LICENSE for more details.
 
 """

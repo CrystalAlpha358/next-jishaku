@@ -12,6 +12,7 @@ Execute this test from the repository using:
 python -m tests.manual_test_multiclass "$BOT_TOKEN"
 
 :copyright: (c) 2021 Devon (scarletcafe) R
+:copyright: (c) 2025 CrystalAlpha358
 :license: MIT, see LICENSE for more details.
 
 """

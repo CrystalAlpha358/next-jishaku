@@ -13,6 +13,7 @@ At the moment all manual tests *could* probably reasonably be integration tests,
 so this should be done at some point in the future.
 
 :copyright: (c) 2022 Devon (scarletcafe) R
+:copyright: (c) 2025 CrystalAlpha358
 :license: MIT, see LICENSE for more details.
 
 """

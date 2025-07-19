@@ -11,6 +11,7 @@ This is mostly intended to be a quick means to have a debuggable bot from a toke
 It can be used to perform manual administrative actions as the bot, or to test Jishaku itself.
 
 :copyright: (c) 2021 Devon (scarletcafe) R
+:copyright: (c) 2025 CrystalAlpha358
 :license: MIT, see LICENSE for more details.
 
 """

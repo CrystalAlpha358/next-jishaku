@@ -2,27 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-MIT License
-
-Copyright (c) 2024 Devon (scarletcafe) R
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+:copyright: (c) 2024 Devon (scarletcafe) R
+:copyright: (c) 2025 CrystalAlpha358
+:license: MIT, see LICENSE for more details.
 """
 
 import os
@@ -100,18 +82,17 @@ with open(ROOT / 'README.md', 'r', encoding='utf-8') as f:
 
 
 setup(
-    name='jishaku',
-    author='Devon (scarletcafe) R',
-    url='https://github.com/scarletcafe/jishaku',
+    name='next-jishaku',
+    author='CrystalAlpha358',
+    url='https://github.com/CrystalAlpha358/next-jishaku',
 
     license='MIT',
     description='A discord.py extension including useful tools for bot development and debugging.',
     long_description=README,
     long_description_content_type='text/markdown',
     project_urls={
-        'Documentation': 'https://jishaku.readthedocs.io/en/latest/',
-        'Code': 'https://github.com/scarletcafe/jishaku',
-        'Issue tracker': 'https://github.com/scarletcafe/jishaku/issues'
+        'Code': 'https://github.com/CrystalAlpha358/next-jishaku',
+        # 'Issue tracker': 'https://github.com/scarletcafe/jishaku/issues'
     },
 
     version=version,
@@ -127,7 +108,7 @@ setup(
         ],
     },
 
-    download_url=f'https://github.com/scarletcafe/jishaku/archive/{version}.tar.gz',
+    # download_url=f'https://github.com/scarletcafe/jishaku/archive/{version}.tar.gz',
 
     keywords='jishaku discord.py discord cog repl extension',
     classifiers=[

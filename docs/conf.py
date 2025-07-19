@@ -21,9 +21,9 @@
 
 from jishaku.meta import __version__
 
-project = 'jishaku'
-copyright = '2021, Devon (scarletcafe) R'
-author = 'scarletcafe'
+project = 'next-jishaku'
+copyright = '2025, CrystalAlpha358'
+author = 'CrystalAlpha358'
 
 # The short X.Y version
 version = __version__

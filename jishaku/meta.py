@@ -7,6 +7,7 @@ jishaku.meta
 Meta information about jishaku.
 
 :copyright: (c) 2021 Devon (scarletcafe) R
+:copyright: (c) 2025 CrystalAlpha358
 :license: MIT, see LICENSE for more details.
 
 """
@@ -35,9 +36,9 @@ class VersionInfo(typing.NamedTuple):
 
 version_info = VersionInfo(major=2, minor=6, micro=0, releaselevel='final', serial=0)
 
-__author__ = 'scarletcafe'
-__copyright__ = 'Copyright 2021 Devon (scarletcafe) R'
+__author__ = 'CrystalAlpha358'
+__copyright__ = 'Copyright (c) 2025 CrystalAlpha358'
 __docformat__ = 'restructuredtext en'
 __license__ = 'MIT'
-__title__ = 'jishaku'
+__title__ = 'next-jishaku'
 __version__ = '.'.join(map(str, (version_info.major, version_info.minor, version_info.micro)))

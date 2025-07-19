@@ -7,6 +7,7 @@ jishaku.repl.scope
 The Scope class and functions relating to it.
 
 :copyright: (c) 2021 Devon (scarletcafe) R
+:copyright: (c) 2025 CrystalAlpha358
 :license: MIT, see LICENSE for more details.
 
 """

@@ -7,6 +7,7 @@ jishaku.flags
 The Jishaku cog base, which contains most of the actual functionality of Jishaku.
 
 :copyright: (c) 2021 Devon (scarletcafe) R
+:copyright: (c) 2025 CrystalAlpha358
 :license: MIT, see LICENSE for more details.
 
 """

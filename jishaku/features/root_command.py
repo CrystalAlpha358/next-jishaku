@@ -7,6 +7,7 @@ jishaku.features.root_command
 The jishaku root command.
 
 :copyright: (c) 2021 Devon (scarletcafe) R
+:copyright: (c) 2025 CrystalAlpha358
 :license: MIT, see LICENSE for more details.
 
 """
