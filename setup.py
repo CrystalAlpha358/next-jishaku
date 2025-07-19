@@ -87,7 +87,7 @@ setup(
     url='https://github.com/CrystalAlpha358/next-jishaku',
 
     license='MIT',
-    description='A discord.py extension including useful tools for bot development and debugging.',
+    description='A nextcord extension including useful tools for bot development and debugging.',
     long_description=README,
     long_description_content_type='text/markdown',
     project_urls={
@@ -99,7 +99,7 @@ setup(
     packages=['jishaku', 'jishaku.features', 'jishaku.repl'],
     include_package_data=True,
     install_requires=REQUIREMENTS,
-    python_requires='>=3.8.0',
+    python_requires='>=3.12.0',
 
     extras_require=EXTRA_REQUIRES,
     entry_points={
@@ -110,20 +110,17 @@ setup(
 
     # download_url=f'https://github.com/scarletcafe/jishaku/archive/{version}.tar.gz',
 
-    keywords='jishaku discord.py discord cog repl extension',
+    keywords='jishaku nextcord discord cog repl extension',
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 1 - Planning',
         'Framework :: AsyncIO',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         'Topic :: Communications :: Chat',
         'Topic :: Internet',
         'Topic :: Software Development :: Debuggers',

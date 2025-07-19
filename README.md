@@ -1,8 +1,12 @@
-[![Python versions](https://img.shields.io/pypi/pyversions/jishaku.svg)](https://pypi.python.org/pypi/jishaku)
-[![License](https://img.shields.io/pypi/l/jishaku.svg)](https://github.com/scarletcafe/jishaku/blob/master/LICENSE)
-[![Status](https://img.shields.io/pypi/status/jishaku.svg)](https://pypi.python.org/pypi/jishaku)
-[![Issues](https://img.shields.io/github/issues/scarletcafe/jishaku.svg?colorB=3333ff)](https://github.com/scarletcafe/jishaku/issues)
-[![Commit activity](https://img.shields.io/github/commit-activity/w/scarletcafe/jishaku.svg)](https://github.com/scarletcafe/jishaku/commits)
+<!-- Currently commented out because it has not been uploaded to PyPI
+[![Python versions](https://img.shields.io/pypi/pyversions/next-jishaku.svg)](https://pypi.python.org/pypi/next-jishaku)
+[![License](https://img.shields.io/pypi/l/next-jishaku.svg)](https://github.com/CrystalAlpha358/next-jishaku/blob/master/LICENSE)
+[![Status](https://img.shields.io/pypi/status/next-jishaku.svg)](https://pypi.python.org/pypi/next-jishaku)
+-->
+<!-- Currently commented out because issues are not enabled
+[![Issues](https://img.shields.io/github/issues/CrystalAlpha358/next-jishaku.svg?colorB=3333ff)](https://github.com/CrystalAlpha358/next-jishaku/issues)
+-->
+[![Commit activity](https://img.shields.io/github/commit-activity/w/CrystalAlpha358/next-jishaku.svg)](https://github.com/CrystalAlpha358/next-jishaku/commits)
 
 ***
 
@@ -11,33 +15,29 @@
     <img src=".github/assets/jishaku_logo.svg" height="36">
 </sub>
 &nbsp;
-jishaku
+next-jishaku
 </h1>
 <p align="center">
 <sup>
-a debugging and utility extension for discord.py bots
-</sup>
-<br>
-<sup>
-    <a href="https://jishaku.readthedocs.io/">Read the documentation online.</a>
+a debugging and utility extension for nextcord bots
 </sup>
 </p>
 
 ***
 
-jishaku is an extension for bot developers that enables rapid prototyping, experimentation, and debugging of features for bots.
+***Disclaimer:*** This project is currently in very early stages of development.
+
+next-jishaku is an extension for bot developers that enables rapid prototyping, experimentation, and debugging of features for bots.
 
 One of jishaku's core philosophies is to be dynamic and easy-to-use. Here's the two step install:
 
-> 1. Download jishaku on the command line using pip:
+> 1. Download next-jishaku on the command line using pip:
 > ```bash
-> pip install -U jishaku
+> pip install -U "next-jishaku @ git+https://github.com/CrystalAlpha358/next-jishaku@master"
 > ```
 > 2. Load the extension in your bot code before it runs:
 > ```python
 > bot.load_extension('jishaku')
-> # or
-> await bot.load_extension('jishaku')
 > ```
 > That's it!
 
@@ -46,8 +46,11 @@ You can also import the module to use the command development utilities.
 ## Index
 
 * [Command reference](#command-reference)
-* [Installing development versions](#installing-development-versions)
 * [Acknowledgements](#acknowledgements)
+
+<!-- Currently commented out because it has not been uploaded to PyPI
+* [Installing development versions](#installing-development-versions)
+-->
 
 ## Command reference
 
@@ -88,25 +91,25 @@ You can also import the module to use the command development utilities.
                 <tr>
                     <td><code>_ctx</code></td>
                     <td>
-                        The <a href="https://discordpy.readthedocs.io/en/latest/ext/commands/api.html#discord.ext.commands.Context">Context</a> that invoked the command.
+                        The <a href="https://docs.nextcord.dev/en/stable/ext/commands/api.html#nextcord.ext.commands.Context">Context</a> that invoked the command.
                     </td>
                 </tr>
                 <tr>
                     <td><code>_bot</code></td>
                     <td>
-                        The running <a href="https://discordpy.readthedocs.io/en/latest/ext/commands/api.html#discord.ext.commands.Bot">Bot</a> instance.
+                        The running <a href="https://docs.nextcord.dev/en/stable/ext/commands/api.html#nextcord.ext.commands.Bot">Bot</a> instance.
                     </td>
                 </tr>
                 <tr>
                     <td><code>_author</code><br><code>_channel</code><br><code>_guild</code><br><code>_me</code><br><code>_message</code><br><code>_msg</code></td>
                     <td>
-                        Shortcuts for attributes on <a href="https://discordpy.readthedocs.io/en/latest/ext/commands/api.html#discord.ext.commands.Context"><code>_ctx</code></a>.
+                        Shortcuts for attributes on <a href="https://docs.nextcord.dev/en/stable/ext/commands/api.html#nextcord.ext.commands.Context"><code>_ctx</code></a>.
                     </td>
                 </tr>
                 <tr>
                     <td><code>_find</code><br><code>_get</code></td>
                     <td>
-                        Shortcuts for <a href="https://discordpy.readthedocs.io/en/latest/api.html#utility-functions"><code>discord.utils</code></a> functions.
+                        Shortcuts for <a href="https://docs.nextcord.dev/en/stable/api.html#utility-functions"><code>nextcord.utils</code></a> functions.
                     </td>
                 </tr>
             </table>
@@ -230,6 +233,7 @@ You can also import the module to use the command development utilities.
     </tr>
 </table>
 
+<!-- Currently commented out because it has not been uploaded to PyPI
 ## Installing development versions
 
 If you'd like to test the latest versions of jishaku, you can do so by downloading from the git hosts instead of from PyPI.
@@ -258,6 +262,7 @@ If you run into such a problem, you can force jishaku to be reinstalled like thi
 > ```
 
 You **must** have installed jishaku with one of the commands above before doing this else you will probably end up with a broken installation.
+-->
 
 ## Acknowledgements
 
