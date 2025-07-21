@@ -39,13 +39,6 @@ STANDARD_FEATURES = (VoiceFeature, GuildFeature, FilesystemFeature, InvocationFe
 
 OPTIONAL_FEATURES: typing.List[typing.Type[Feature]] = []
 
-try:
-    from jishaku.features.youtube import YouTubeFeature
-except ImportError:
-    pass
-else:
-    OPTIONAL_FEATURES.insert(0, YouTubeFeature)
-
 
 class Jishaku(*OPTIONAL_FEATURES, *STANDARD_FEATURES):  # type: ignore  # pylint: disable=too-few-public-methods
     """
