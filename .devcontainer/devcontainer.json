@@ -26,11 +26,14 @@
 			"extensions": [
 				"bierner.markdown-preview-github-styles",
 				"codezombiech.gitignore",
+				"lextudio.restructuredtext",
 				"ms-python.black-formatter",
 				"ms-python.flake8",
 				"ms-python.isort",
 				"ms-python.pylint",
 				"ms-python.python",
+				"redhat.vscode-yaml",
+				"swyddfa.esbonio",
 				"tamasfe.even-better-toml"
 			]
 		}
