@@ -12,6 +12,7 @@ jishaku test utils
 
 import asyncio
 import contextlib
+import datetime
 import random
 from unittest import mock
 from unittest.mock import patch
@@ -97,5 +98,6 @@ def mock_ctx(bot: commands.Bot | None = None):
         ctx.channel = ctx.message.channel
         ctx.guild = ctx.message.guild
         ctx.send = ctx.message.channel.send
+        ctx.message.created_at.mock_add_spec(datetime.datetime)
 
         yield ctx
