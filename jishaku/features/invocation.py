@@ -20,8 +20,8 @@ import re
 import time
 import typing
 
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 from jishaku.exception_handling import ReplResponseReactor
 from jishaku.features.baseclass import Feature
@@ -29,9 +29,9 @@ from jishaku.models import copy_context_with
 from jishaku.paginators import PaginatorInterface, WrappedPaginator, use_file_check
 from jishaku.types import ContextA, ContextT
 
-UserIDConverter = commands.IDConverter[typing.Union[discord.Member, discord.User]]
+UserIDConverter = commands.IDConverter[typing.Union[nextcord.Member, nextcord.User]]
 ChannelIDConverter = commands.IDConverter[
-    typing.Union[discord.abc.GuildChannel, discord.abc.PrivateChannel, discord.Thread]
+    typing.Union[nextcord.abc.GuildChannel, nextcord.abc.PrivateChannel, nextcord.Thread]
 ]
 
 
@@ -40,17 +40,17 @@ class SlimUserConverter(UserIDConverter):  # pylint: disable=too-few-public-meth
     Identical to the stock UserConverter, but does not perform plaintext name checks.
     """
 
-    async def convert(self, ctx: ContextA, argument: str) -> typing.Union[discord.Member, discord.User]:
+    async def convert(self, ctx: ContextA, argument: str) -> typing.Union[nextcord.Member, nextcord.User]:
         """Converter method"""
         match = self._get_id_match(argument) or re.match(r"<@!?([0-9]{15,20})>$", argument)  # type: ignore
 
         if match is not None:
             user_id = int(match.group(1))
-            result = ctx.bot.get_user(user_id) or discord.utils.get(ctx.message.mentions, id=user_id)
+            result = ctx.bot.get_user(user_id) or nextcord.utils.get(ctx.message.mentions, id=user_id)
             if result is None:
                 try:
                     result = await ctx.bot.fetch_user(user_id)
-                except discord.HTTPException:
+                except nextcord.HTTPException:
                     raise commands.UserNotFound(argument) from None
 
             return result
@@ -66,7 +66,7 @@ class SlimChannelConverter(ChannelIDConverter):  # pylint: disable=too-few-publi
 
     async def convert(
         self, ctx: ContextA, argument: str
-    ) -> typing.Union[discord.abc.GuildChannel, discord.abc.PrivateChannel, discord.Thread]:
+    ) -> typing.Union[nextcord.abc.GuildChannel, nextcord.abc.PrivateChannel, nextcord.Thread]:
         """Converter method"""
         match = self._get_id_match(argument) or re.match(r"<#([0-9]{15,20})>$", argument)
 
@@ -76,9 +76,10 @@ class SlimChannelConverter(ChannelIDConverter):  # pylint: disable=too-few-publi
             if ctx.guild is not None:
                 result = ctx.guild.get_channel_or_thread(channel_id)
             if result is None:
+                # This method does not return PartialMessageable
                 result = ctx.bot.get_channel(channel_id)
             if result is not None:
-                return result
+                return result  # type: ignore
         raise commands.ChannelNotFound(argument)
 
 
@@ -106,7 +107,7 @@ class InvocationFeature(Feature):
             return
 
         for override in overrides:
-            if isinstance(override, discord.User):
+            if isinstance(override, nextcord.User):
                 # This is a user
                 if ctx.guild:
                     # Try to upgrade to a Member instance
@@ -114,7 +115,7 @@ class InvocationFeature(Feature):
                     #  the command more compatible with chaining, e.g. `jsk in .. jsk su ..`
                     target_member = None
 
-                    with contextlib.suppress(discord.HTTPException):
+                    with contextlib.suppress(nextcord.HTTPException):
                         target_member = ctx.guild.get_member(override.id) or await ctx.guild.fetch_member(override.id)
 
                     kwargs["author"] = target_member or override
@@ -149,7 +150,7 @@ class InvocationFeature(Feature):
         You can use this in conjunction with `jsk sudo` to bypass this.
         """
 
-        with self.submit(ctx):  # allow repeats to be cancelled
+        with self.submit(ctx):  # type: ignore # allow repeats to be cancelled
             for _ in range(times):
                 if ctx.prefix:
                     alt_ctx = await copy_context_with(ctx, content=ctx.prefix + command_string)
@@ -180,7 +181,7 @@ class InvocationFeature(Feature):
         start = time.perf_counter()
 
         async with ReplResponseReactor(ctx.message):
-            with self.submit(ctx):
+            with self.submit(ctx):  # type: ignore
                 await alt_ctx.command.invoke(alt_ctx)
 
         end = time.perf_counter()
@@ -212,7 +213,7 @@ class InvocationFeature(Feature):
         source_text = "".join(source_lines)
 
         if use_file_check(ctx, len(source_text)):  # File "full content" preview limit
-            await ctx.send(file=discord.File(filename=filename, fp=io.BytesIO(source_text.encode("utf-8"))))
+            await ctx.send(file=nextcord.File(filename=filename, fp=io.BytesIO(source_text.encode("utf-8"))))
         else:
             paginator = WrappedPaginator(prefix="```py", suffix="```", max_size=1980)
 

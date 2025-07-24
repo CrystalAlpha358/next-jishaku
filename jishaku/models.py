@@ -4,7 +4,7 @@
 jishaku.models
 ~~~~~~~~~~~~~~
 
-Functions for modifying or interfacing with discord.py models.
+Functions for modifying or interfacing with nextcord models.
 
 :copyright: (c) 2021 Devon (scarletcafe) R
 :copyright: (c) 2025 CrystalAlpha358
@@ -15,7 +15,7 @@ Functions for modifying or interfacing with discord.py models.
 import copy
 import typing
 
-import discord
+import nextcord
 
 from jishaku.types import ContextT
 
@@ -23,8 +23,8 @@ from jishaku.types import ContextT
 async def copy_context_with(
     ctx: ContextT,
     *,
-    author: typing.Optional[typing.Union[discord.Member, discord.User]] = None,
-    channel: typing.Optional[discord.TextChannel] = None,
+    author: typing.Optional[typing.Union[nextcord.Member, nextcord.User]] = None,
+    channel: typing.Optional[nextcord.TextChannel] = None,
     **kwargs: typing.Any
 ) -> ContextT:
     """
@@ -32,7 +32,7 @@ async def copy_context_with(
     """
 
     # copy the message and update the attributes
-    alt_message: discord.Message = copy.copy(ctx.message)
+    alt_message: nextcord.Message = copy.copy(ctx.message)
     alt_message._update(kwargs)  # type: ignore # pylint: disable=protected-access
 
     if author is not None:

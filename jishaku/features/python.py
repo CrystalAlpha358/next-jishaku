@@ -20,7 +20,7 @@ import sys
 import time
 import typing
 
-import discord
+import nextcord
 
 from jishaku.codeblocks import Codeblock, codeblock_converter
 from jishaku.exception_handling import ReplResponseReactor
@@ -98,13 +98,13 @@ class PythonFeature(Feature):
         What you return is what gets stored in the temporary _ variable.
         """
 
-        if isinstance(result, discord.Message):
+        if isinstance(result, nextcord.Message):
             return await ctx.send(f"<Message <{result.jump_url}>>")
 
-        if isinstance(result, discord.File):
+        if isinstance(result, nextcord.File):
             return await ctx.send(file=result)
 
-        if isinstance(result, discord.Embed):
+        if isinstance(result, nextcord.Embed):
             return await ctx.send(embed=result)
 
         if isinstance(result, PaginatorInterface):
@@ -119,12 +119,12 @@ class PythonFeature(Feature):
             if result.strip() == '':
                 result = "\u200b"
 
-            if self.bot.http.token:
-                result = result.replace(self.bot.http.token, "[token omitted]")
+            if token := self.bot._token:  # pylint: disable=protected-access
+                result = result.replace(token, "[token omitted]")
 
             return await ctx.send(
                 result,
-                allowed_mentions=discord.AllowedMentions.none()
+                allowed_mentions=nextcord.AllowedMentions.none()
             )
 
         if use_file_check(ctx, len(result)):  # File "full content" preview limit
@@ -133,7 +133,7 @@ class PythonFeature(Feature):
             # Since this avoids escape issues and is more intuitive than pagination for
             #  long results, it will now be prioritized over PaginatorInterface if the
             #  resultant content is below the filesize threshold
-            return await ctx.send(file=discord.File(
+            return await ctx.send(file=nextcord.File(
                 filename="output.py",
                 fp=io.BytesIO(result.encode('utf-8'))
             ))
@@ -228,8 +228,8 @@ class PythonFeature(Feature):
 
                         header = repr(result).replace("``", "`\u200b`")
 
-                        if self.bot.http.token:
-                            header = header.replace(self.bot.http.token, "[token omitted]")
+                        if token := self.bot._token:  # pylint: disable=protected-access
+                            header = header.replace(token, "[token omitted]")
 
                         if len(header) > 485:
                             header = header[0:482] + "..."
@@ -247,7 +247,7 @@ class PythonFeature(Feature):
                         text = "\n".join(lines)
 
                         if use_file_check(ctx, len(text)):  # File "full content" preview limit
-                            send(await ctx.send(file=discord.File(
+                            send(await ctx.send(file=nextcord.File(
                                 filename="inspection.prolog",
                                 fp=io.BytesIO(text.encode('utf-8'))
                             )))
@@ -355,7 +355,7 @@ class PythonFeature(Feature):
                                 f"Active (non-waiting) time: {active_time}",
                                 "**Delay will be added by async setup, use only for relative measurements**",
                             ]),
-                            file=discord.File(
+                            file=nextcord.File(
                                 filename="lines.ansi",
                                 fp=io.BytesIO(''.join(lines).encode('utf-8'))
                             )
@@ -379,7 +379,7 @@ class PythonFeature(Feature):
             text = "\n".join(disassemble(argument.content, arg_dict=arg_dict))
 
             if use_file_check(ctx, len(text)):  # File "full content" preview limit
-                await ctx.send(file=discord.File(
+                await ctx.send(file=nextcord.File(
                     filename="dis.py",
                     fp=io.BytesIO(text.encode('utf-8'))
                 ))
@@ -403,7 +403,7 @@ class PythonFeature(Feature):
         async with ReplResponseReactor(ctx.message):
             text = create_tree(argument.content, use_ansi=Flags.use_ansi(ctx))
 
-            await ctx.send(file=discord.File(
+            await ctx.send(file=nextcord.File(
                 filename="ast.ansi",
                 fp=io.BytesIO(text.encode('utf-8'))
             ))
@@ -454,7 +454,7 @@ class PythonFeature(Feature):
 
                         text = formatter.output(True, Flags.use_ansi(ctx))
 
-                        await ctx.send(file=discord.File(
+                        await ctx.send(file=nextcord.File(
                             filename="specialist.ansi",
                             fp=io.BytesIO(text.encode('utf-8'))
                         ))

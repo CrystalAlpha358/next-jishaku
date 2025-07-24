@@ -15,7 +15,7 @@ Builtin functions and variables within Jishaku REPL contexts.
 import typing
 
 import aiohttp
-import discord
+import nextcord
 
 from jishaku.types import ContextA
 
@@ -88,8 +88,8 @@ def get_var_dict_from_ctx(ctx: ContextA, prefix: str = '_') -> typing.Dict[str, 
         'bot': ctx.bot,
         'channel': ctx.channel,
         'ctx': ctx,
-        'find': discord.utils.find,
-        'get': discord.utils.get,
+        'find': nextcord.utils.find,
+        'get': nextcord.utils.get,
         'guild': ctx.guild,
         'me': ctx.me,
         'http_get_bytes': http_get_bytes,

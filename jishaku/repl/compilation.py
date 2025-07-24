@@ -29,8 +29,8 @@ async def _repl_coroutine({0}):
     import asyncio
 
     import aiohttp
-    import discord
-    from discord.ext import commands
+    import nextcord
+    from nextcord.ext import commands
 
     try:
         import jishaku
@@ -55,8 +55,8 @@ def wrap_code(code: str, args: str = '', auto_return: bool = True) -> ast.Module
     mod: ast.Module = import_expression.parse(CORO_CODE.format(args), mode='exec')  # type: ignore
 
     for node in ast.walk(mod):
-        node.lineno = -100_000
-        node.end_lineno = -100_000
+        node.lineno = -100_000  # type: ignore
+        node.end_lineno = -100_000  # type: ignore
 
     definition = mod.body[-1]  # async def ...:
     assert isinstance(definition, ast.AsyncFunctionDef)

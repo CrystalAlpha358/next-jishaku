@@ -12,10 +12,10 @@ jishaku.cog loadability and functionality test
 
 import asyncio
 
-import discord
+import nextcord
 import pytest
 import pytest_asyncio
-from discord.ext import commands
+from nextcord.ext import commands
 
 from tests import utils
 
@@ -40,12 +40,12 @@ from tests import utils
     ]
 )
 async def bot(request):
-    b = request.param[1]('?', intents=discord.Intents.all(), **request.param[2])
-    await discord.utils.maybe_coroutine(b.load_extension, request.param[0])
+    b = request.param[1]('?', intents=nextcord.Intents.all(), **request.param[2])
+    await nextcord.utils.maybe_coroutine(b.load_extension, request.param[0])
 
     yield b
 
-    await discord.utils.maybe_coroutine(b.unload_extension, request.param[0])
+    await nextcord.utils.maybe_coroutine(b.unload_extension, request.param[0])
 
 
 @pytest.mark.asyncio

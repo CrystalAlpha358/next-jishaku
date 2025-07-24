@@ -41,7 +41,7 @@ def executor_function(sync_function: typing.Callable[P, T]) -> typing.Callable[P
 
 
         @executor_function
-        def color_processing(color: discord.Color):
+        def color_processing(color: nextcord.Color):
             with Image.new('RGB', (64, 64), color.to_rgb()) as im:
                 buff = BytesIO()
                 im.save(buff, 'png')
@@ -50,11 +50,11 @@ def executor_function(sync_function: typing.Callable[P, T]) -> typing.Callable[P
             return buff
 
         @bot.command()
-        async def color(ctx: commands.Context, color: discord.Color=None):
+        async def color(ctx: commands.Context, color: nextcord.Color=None):
             color = color or ctx.author.color
             buff = await color_processing(color=color)
 
-            await ctx.send(file=discord.File(fp=buff, filename='color.png'))
+            await ctx.send(file=nextcord.File(fp=buff, filename='color.png'))
     """
 
     @functools.wraps(sync_function)
@@ -106,7 +106,7 @@ class AsyncSender(typing.Generic[T, U]):
 
     def __init__(self, iterator: typing.AsyncGenerator[T, typing.Optional[U]]):
         self.iterator = iterator
-        self.send_value: U = None
+        self.send_value: U | None = None
 
     def __aiter__(self) -> typing.AsyncGenerator[typing.Tuple[typing.Callable[[typing.Optional[U]], None], T], None]:
         return self._internal(self.iterator.__aiter__())  # type: ignore

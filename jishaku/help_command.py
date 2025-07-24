@@ -14,7 +14,7 @@ HelpCommand subclasses with jishaku features
 
 import typing
 
-from discord.ext import commands
+from nextcord.ext import commands
 
 from jishaku.paginators import PaginatorEmbedInterface, PaginatorInterface
 

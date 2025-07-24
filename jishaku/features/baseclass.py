@@ -18,7 +18,7 @@ import contextlib
 import typing
 from datetime import datetime, timezone
 
-from discord.ext import commands
+from nextcord.ext import commands
 from typing_extensions import Concatenate, ParamSpec
 
 from jishaku.types import BotT, ContextA
@@ -135,7 +135,7 @@ class Feature(commands.Cog):
             if not self.callback:
                 raise RuntimeError("A Features.Command lacked a callback at the time it was attempted to be converted")
 
-            return command_type(**self.kwargs)(self.callback)
+            return command_type(**self.kwargs)(self.callback)  # type: ignore
 
     load_time: datetime = datetime.now(timezone.utc)
 
@@ -214,7 +214,7 @@ class Feature(commands.Cog):
         Local check, makes all commands in resulting cogs owner-only
         """
 
-        if not await ctx.bot.is_owner(ctx.author):
+        if not await ctx.bot.is_owner(ctx.author):  # type: ignore
             raise commands.NotOwner("You must own this bot to use Jishaku.")
         return True
 

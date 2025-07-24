@@ -13,7 +13,7 @@ jishaku.inspections test
 import collections  # for __iadd__ test
 import typing
 
-import discord
+import nextcord
 import pytest
 
 from jishaku.repl.inspections import all_inspections
@@ -24,7 +24,7 @@ from tests.utils import sentinel
     "target",
     [
         4,
-        discord.Client,  # cover type subclasses
+        nextcord.Client,  # cover type subclasses
         tuple,  # cover many-subclass truncation
         [False, 1, "2", 3.0],  # cover content types
         collections.Counter,  # cover inplace operators

@@ -21,12 +21,6 @@ import sys
 import time
 import typing
 
-from typing_extensions import ParamSpec
-
-T = typing.TypeVar('T')
-P = ParamSpec('P')
-
-
 SHELL = os.getenv("SHELL") or "/bin/bash"
 WINDOWS = sys.platform == "win32"
 
@@ -104,6 +98,7 @@ class ShellReader:
         self.loop = loop or asyncio.get_event_loop()
         self.timeout = timeout
 
+        assert self.stdout is not None
         self.stdout_task = self.make_reader_task(self.stdout, self.stdout_handler) if self.process.stdout else None
         self.stderr_task = self.make_reader_task(self.process.stderr, self.stderr_handler) if self.process.stderr else None
 
@@ -117,12 +112,12 @@ class ShellReader:
 
         return (not self.stdout_task or self.stdout_task.done()) and (not self.stderr_task or self.stderr_task.done())
 
-    async def executor_wrapper(self, func: typing.Callable[P, T], *args: P.args, **kwargs: P.kwargs) -> T:
+    async def executor_wrapper[T, *Ts](self, func: typing.Callable[[*Ts], T], *args: *Ts) -> T:
         """
         Call wrapper for stream reader.
         """
 
-        return await self.loop.run_in_executor(None, func, *args, **kwargs)
+        return await self.loop.run_in_executor(None, func, *args)
 
     def make_reader_task(self, stream: typing.IO[bytes], callback: typing.Callable[[bytes], typing.Any]):
         """

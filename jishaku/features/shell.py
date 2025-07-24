@@ -20,9 +20,9 @@ import sys
 import tempfile
 import typing
 
-import discord
-from discord import ui
-from discord.ext import commands
+import nextcord
+from nextcord import ui
+from nextcord.ext import commands
 
 from jishaku.codeblocks import Codeblock, codeblock_converter
 from jishaku.exception_handling import ReplResponseReactor
@@ -73,16 +73,16 @@ class ShellFeature(Feature):
     Feature containing the shell-related commands
     """
 
-    class ShellStandardInputModal(ui.Modal, title="Type input"):
+    class ShellStandardInputModal(ui.Modal):
         """Modal that prompts users for text to provide to stdin"""
 
-        stdin_content: ui.TextInput[ui.Modal] = ui.TextInput(label="Text", style=discord.TextStyle.short)
+        stdin_content = ui.TextInput(label="Text", style=nextcord.TextInputStyle.short)
 
         def __init__(self, reader: ShellReader, *args: typing.Any, **kwargs: typing.Any):
-            super().__init__(*args, timeout=300, **kwargs)
+            super().__init__("Type input", *args, timeout=300, **kwargs)
             self.reader = reader
 
-        async def on_submit(self, interaction: discord.Interaction, /):
+        async def on_submit(self, interaction: nextcord.Interaction, /):
             value = self.stdin_content.value or ""
 
             if self.reader.stdin and self.reader.stdin.writable():
@@ -122,7 +122,7 @@ class ShellFeature(Feature):
                     paginator = WrappedPaginator(prefix=prefix, max_size=1975)
                     paginator.add_line(f"{reader.ps1} {argument.content}\n")
 
-                    async def send_standard_input(interaction: discord.Interaction):
+                    async def send_standard_input(interaction: nextcord.Interaction):
                         await interaction.response.send_modal(self.ShellStandardInputModal(reader))
 
                     stdin_button = ui.Button(label="\N{KEYBOARD} Send standard input")

@@ -23,8 +23,8 @@ import typing
 import uuid
 
 import click
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 LOG_FORMAT: logging.Formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s')
 LOG_STREAM: logging.Handler = logging.StreamHandler(stream=sys.stdout)
@@ -38,15 +38,14 @@ async def entry(bot: commands.Bot, *args: typing.Any, **kwargs: typing.Any):
     Async entrypoint
     """
 
-    LOGGER.critical("Beginning async context")
-    async with bot:
+    try:
         LOGGER.critical("Loading jishaku")
-        await bot.load_extension('jishaku')
+        bot.load_extension('jishaku')
 
         for extension in bot.extensions_to_load:  # type: ignore
             extension: str
             LOGGER.critical("Loading %s", extension)
-            await bot.load_extension(extension)
+            bot.load_extension(extension)
 
         LOGGER.critical(
             'Generated a unique UUID for this session: %s'
@@ -81,6 +80,8 @@ async def entry(bot: commands.Bot, *args: typing.Any, **kwargs: typing.Any):
             await bot.start(*args, **kwargs)
         except KeyboardInterrupt:
             pass
+    finally:
+        await bot.close()
 
 
 @click.command()
@@ -118,9 +119,9 @@ def entrypoint(
         log_file_handler.setFormatter(LOG_FORMAT)
         logger.addHandler(log_file_handler)
 
-    intents_class = discord.Intents.default()
-    all_intents = [name for name, _ in discord.Intents.all()]
-    default_intents = [name for name, value in discord.Intents.default() if value]
+    intents_class = nextcord.Intents.default()
+    all_intents = [name for name, _ in nextcord.Intents.all()]
+    default_intents = [name for name, value in nextcord.Intents.default() if value]
 
     for intent in intents:
         if not intent.startswith(('+', '-')):
@@ -134,7 +135,7 @@ def entrypoint(
         if name in all_intents:
             setattr(intents_class, name, value)
         elif name == 'all':
-            intents_class = discord.Intents.all() if value else discord.Intents.none()
+            intents_class = nextcord.Intents.all() if value else nextcord.Intents.none()
         elif name == 'default':
             for default_intent in default_intents:
                 setattr(intents_class, default_intent, value)
@@ -157,14 +158,14 @@ def entrypoint(
                 f"Intent argument {intent} is invalid; the intent {name} was not found."
             )
 
-    def prefix(bot: commands.Bot, _: discord.Message) -> typing.List[str]:
+    def prefix(bot: commands.Bot, _: nextcord.Message) -> typing.List[str]:
         return [
             f'{bot.unique_id}::',  # type: ignore
             f'<@{bot.user.id}> {bot.unique_id}::',  # type: ignore
             f'<@!{bot.user.id}> {bot.unique_id}::',  # type: ignore
         ]
 
-    bot = commands.Bot(prefix, intents=intents_class)
+    bot = commands.Bot(prefix, intents=intents_class)  # type: ignore
     bot.unique_id = str(uuid.uuid4())  # type: ignore
     bot.extensions_to_load = load_extension  # type: ignore
     bot.skip_wait = skip_wait  # type: ignore

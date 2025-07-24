@@ -112,7 +112,7 @@ setup(
 
     keywords='jishaku nextcord discord cog repl extension',
     classifiers=[
-        'Development Status :: 1 - Planning',
+        'Development Status :: 3 - Alpha',
         'Framework :: AsyncIO',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',

@@ -4,7 +4,7 @@
 jishaku subclassing test 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This is a valid extension file for discord.py intended to
+This is a valid extension file for nextcord intended to
 discover weird behaviors related to subclassing.
 
 This variant overrides behavior directly.
@@ -15,7 +15,7 @@ This variant overrides behavior directly.
 
 """
 
-from discord.ext import commands
+from nextcord.ext import commands
 
 import jishaku
 from jishaku.types import ContextT
@@ -39,4 +39,4 @@ async def setup(bot: commands.Bot):
     The setup function for the extended cog
     """
 
-    await bot.add_cog(Magnet2(bot=bot))  # type: ignore[reportGeneralTypeIssues]
+    bot.add_cog(Magnet2(bot=bot))  # type: ignore

@@ -17,7 +17,7 @@ import pathlib
 import typing
 
 from braceexpand import braceexpand
-from discord.ext import commands
+from nextcord.ext import commands
 
 from jishaku.types import BotT, ContextA
 

@@ -17,7 +17,7 @@ import contextlib
 import io
 import typing
 
-import discord
+import nextcord
 from tabulate import tabulate
 
 from jishaku.exception_handling import ReplResponseReactor
@@ -389,7 +389,7 @@ class SQLFeature(Feature):
         text = tabulate({key: [value] for key, value in output.items()}, headers='keys', tablefmt='psql')
 
         if use_file_check(ctx, len(text)):
-            await ctx.reply(file=discord.File(
+            await ctx.reply(file=nextcord.File(
                 filename="response.txt",
                 fp=io.BytesIO(text.encode('utf-8'))
             ))
@@ -432,7 +432,7 @@ class SQLFeature(Feature):
         text = tabulate(aggregator, headers='keys', tablefmt='psql')
 
         if use_file_check(ctx, len(text)):
-            await ctx.reply(file=discord.File(
+            await ctx.reply(file=nextcord.File(
                 filename="response.txt",
                 fp=io.BytesIO(text.encode('utf-8'))
             ))

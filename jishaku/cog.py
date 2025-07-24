@@ -15,7 +15,7 @@ The Jishaku debugging and diagnostics cog implementation.
 import inspect
 import typing
 
-from discord.ext import commands
+from nextcord.ext import commands
 
 from jishaku.features.baseclass import Feature
 from jishaku.features.filesystem import FilesystemFeature
@@ -51,7 +51,7 @@ async def async_setup(bot: commands.Bot):
     The async setup function defining the jishaku.cog and jishaku extensions.
     """
 
-    await bot.add_cog(Jishaku(bot=bot))  # type: ignore
+    bot.add_cog(Jishaku(bot=bot))  # type: ignore
 
 
 def setup(bot: commands.Bot):  # pylint: disable=inconsistent-return-statements
@@ -62,4 +62,4 @@ def setup(bot: commands.Bot):  # pylint: disable=inconsistent-return-statements
     if inspect.iscoroutinefunction(bot.add_cog):
         return async_setup(bot)
 
-    bot.add_cog(Jishaku(bot=bot))  # type: ignore[reportUnusedCoroutine]
+    bot.add_cog(Jishaku(bot=bot))  # type: ignore

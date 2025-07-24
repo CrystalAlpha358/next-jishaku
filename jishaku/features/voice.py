@@ -14,9 +14,9 @@ The jishaku core voice-related commands.
 
 import typing
 
-import discord
-import discord.opus
-import discord.voice_client
+import nextcord
+import nextcord.opus
+import nextcord.voice_client
 
 from jishaku.features.baseclass import Feature
 from jishaku.types import ContextA
@@ -33,12 +33,12 @@ class VoiceFeature(Feature):
         Check for whether VC is available in this bot.
         """
 
-        if not discord.voice_client.has_nacl:
+        if not nextcord.voice_client.has_nacl:
             return await ctx.send("Voice cannot be used because PyNaCl is not loaded.")
 
-        if not discord.opus.is_loaded():
-            if hasattr(discord.opus, '_load_default'):
-                if not discord.opus._load_default():  # type: ignore  # pylint: disable=protected-access,no-member
+        if not nextcord.opus.is_loaded():
+            if hasattr(nextcord.opus, '_load_default'):
+                if not nextcord.opus._load_default():  # type: ignore  # pylint: disable=protected-access,no-member
                     return await ctx.send(
                         "Voice cannot be used because libopus is not loaded and attempting to load the default failed."
                     )
@@ -53,7 +53,7 @@ class VoiceFeature(Feature):
 
         if not ctx.guild or not ctx.guild.voice_client or (
             not ctx.guild.voice_client.is_connected()
-            if isinstance(ctx.guild.voice_client, discord.VoiceClient)
+            if isinstance(ctx.guild.voice_client, nextcord.VoiceClient)
             else False
         ):
             return await ctx.send("Not connected to a voice channel in this guild.")
@@ -70,9 +70,9 @@ class VoiceFeature(Feature):
         if check:
             return check
 
-        guild: discord.Guild = ctx.guild  # type: ignore
+        guild: nextcord.Guild = ctx.guild  # type: ignore
 
-        if (not guild.voice_client.is_playing() if isinstance(guild.voice_client, discord.VoiceClient) else False):
+        if (not guild.voice_client.is_playing() if isinstance(guild.voice_client, nextcord.VoiceClient) else False):
             return await ctx.send("The voice client in this guild is not playing anything.")
 
     @Feature.Command(parent="jsk", name="voice", aliases=["vc"],
@@ -87,16 +87,17 @@ class VoiceFeature(Feature):
         if await self.voice_check(ctx):
             return
 
-        guild: discord.Guild = ctx.guild  # type: ignore
+        guild: nextcord.Guild = ctx.guild  # type: ignore
 
         # give info about the current voice client if there is one
-        voice: discord.VoiceProtocol = guild.voice_client  # type: ignore
+        voice: nextcord.VoiceProtocol = guild.voice_client  # type: ignore
 
-        if isinstance(voice, discord.VoiceClient):
+        if isinstance(voice, nextcord.VoiceClient):
             if not voice or not voice.is_connected():
                 return await ctx.send("Not connected.")
 
-            await ctx.send(f"Connected to {voice.channel.name}, "
+            channel_name: str = getattr(voice.channel, "name", "*unknown channel*")
+            await ctx.send(f"Connected to {channel_name}, "
                            f"{'paused' if voice.is_paused() else 'playing' if voice.is_playing() else 'idle'}.")
         else:
             await ctx.send(f"Connected to {voice.channel} with a custom VoiceProtocol: {voice}")
@@ -106,7 +107,7 @@ class VoiceFeature(Feature):
         self,
         ctx: ContextA,
         *,
-        destination: typing.Union[discord.VoiceChannel, discord.Member] = None  # type: ignore
+        destination: typing.Union[nextcord.VoiceChannel, nextcord.Member] = None  # type: ignore
     ):
         """
         Joins a voice channel, or moves to it if already connected.
@@ -121,18 +122,18 @@ class VoiceFeature(Feature):
 
         destination = destination or ctx.author
 
-        if isinstance(destination, discord.Member):
+        if isinstance(destination, nextcord.Member):
             if destination.voice and destination.voice.channel:
-                if isinstance(destination.voice.channel, discord.StageChannel):
+                if isinstance(destination.voice.channel, nextcord.StageChannel):
                     return await ctx.send("Cannot join a stage channel.")
                 destination = destination.voice.channel
             else:
                 return await ctx.send("Member has no voice channel.")
 
-        voice: discord.VoiceProtocol = ctx.guild.voice_client  # type: ignore
+        voice: nextcord.VoiceProtocol = ctx.guild.voice_client  # type: ignore
 
         if voice:
-            if isinstance(voice, discord.VoiceClient):
+            if isinstance(voice, nextcord.VoiceClient):
                 await voice.move_to(destination)
             else:
                 await ctx.send(f"Can't move a custom VoiceProtocol: {voice}")
@@ -150,11 +151,12 @@ class VoiceFeature(Feature):
         if await self.connected_check(ctx):
             return
 
-        voice: discord.VoiceProtocol = ctx.guild.voice_client  # type: ignore
+        voice: nextcord.VoiceProtocol = ctx.guild.voice_client  # type: ignore
 
-        if isinstance(voice, discord.VoiceClient):
+        if isinstance(voice, nextcord.VoiceClient):
             await voice.disconnect()
-            await ctx.send(f"Disconnected from {voice.channel.name}.")
+            channel_name: str = getattr(voice.channel, "name", "*unknown channel*")
+            await ctx.send(f"Disconnected from {channel_name}.")
         else:
             await ctx.send(f"Can't disconnect a custom VoiceProtocol: {voice}")
 
@@ -167,11 +169,12 @@ class VoiceFeature(Feature):
         if await self.playing_check(ctx):
             return
 
-        voice: discord.VoiceProtocol = ctx.guild.voice_client  # type: ignore
+        voice: nextcord.VoiceProtocol = ctx.guild.voice_client  # type: ignore
 
-        if isinstance(voice, discord.VoiceClient):
+        if isinstance(voice, nextcord.VoiceClient):
             voice.stop()
-            await ctx.send(f"Stopped playing audio in {voice.channel.name}.")
+            channel_name: str = getattr(voice.channel, "name", "*unknown channel*")
+            await ctx.send(f"Stopped playing audio in {channel_name}.")
         else:
             await ctx.send(f"Can't stop a custom VoiceProtocol: {voice}")
 
@@ -184,14 +187,15 @@ class VoiceFeature(Feature):
         if await self.playing_check(ctx):
             return
 
-        voice: discord.VoiceProtocol = ctx.guild.voice_client  # type: ignore
+        voice: nextcord.VoiceProtocol = ctx.guild.voice_client  # type: ignore
 
-        if isinstance(voice, discord.VoiceClient):
+        if isinstance(voice, nextcord.VoiceClient):
             if voice.is_paused():
                 return await ctx.send("Audio is already paused.")
 
             voice.pause()
-            await ctx.send(f"Paused audio in {voice.channel.name}.")
+            channel_name: str = getattr(voice.channel, "name", "*unknown channel*")
+            await ctx.send(f"Paused audio in {channel_name}.")
         else:
             await ctx.send(f"Can't pause a custom VoiceProtocol: {voice}")
 
@@ -204,14 +208,15 @@ class VoiceFeature(Feature):
         if await self.connected_check(ctx):
             return
 
-        voice: discord.VoiceProtocol = ctx.guild.voice_client  # type: ignore
+        voice: nextcord.VoiceProtocol = ctx.guild.voice_client  # type: ignore
 
-        if isinstance(voice, discord.VoiceClient):
+        if isinstance(voice, nextcord.VoiceClient):
             if not voice.is_paused():
                 return await ctx.send("Audio is not paused.")
 
             voice.resume()
-            await ctx.send(f"Resumed audio in {voice.channel.name}.")
+            channel_name: str = getattr(voice.channel, "name", "*unknown channel*")
+            await ctx.send(f"Resumed audio in {channel_name}.")
         else:
             await ctx.send(f"Can't resume a custom VoiceProtocol: {voice}")
 
@@ -226,12 +231,12 @@ class VoiceFeature(Feature):
 
         volume = max(0.0, min(1.0, percentage / 100))
 
-        voice: discord.VoiceProtocol = ctx.guild.voice_client  # type: ignore
+        voice: nextcord.VoiceProtocol = ctx.guild.voice_client  # type: ignore
 
-        if isinstance(voice, discord.VoiceClient):
+        if isinstance(voice, nextcord.VoiceClient):
             source = voice.source
 
-            if not isinstance(source, discord.PCMVolumeTransformer):
+            if not isinstance(source, nextcord.PCMVolumeTransformer):
                 return await ctx.send("This source doesn't support adjusting volume or "
                                       "the interface to do so is not exposed.")
 
@@ -252,16 +257,17 @@ class VoiceFeature(Feature):
         if await self.connected_check(ctx):
             return
 
-        voice: discord.VoiceProtocol = ctx.guild.voice_client  # type: ignore
+        voice: nextcord.VoiceProtocol = ctx.guild.voice_client  # type: ignore
 
-        if isinstance(voice, discord.VoiceClient):
+        if isinstance(voice, nextcord.VoiceClient):
             if voice.is_playing():
                 voice.stop()
 
             # remove embed maskers if present
             uri = uri.lstrip("<").rstrip(">")
 
-            voice.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(uri)))
-            await ctx.send(f"Playing in {voice.channel.name}.")
+            voice.play(nextcord.PCMVolumeTransformer(nextcord.FFmpegPCMAudio(uri)))
+            channel_name: str = getattr(voice.channel, "name", "*unknown channel*")
+            await ctx.send(f"Playing in {channel_name}.")
         else:
             await ctx.send(f"Can't play on a custom VoiceProtocol: {voice}")

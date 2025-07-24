@@ -16,7 +16,7 @@ import random
 from unittest import mock
 from unittest.mock import patch
 
-from discord.ext import commands
+from nextcord.ext import commands
 
 
 def sentinel():
@@ -66,7 +66,7 @@ def nested_mocks(ctx, standards, coros):
 
 
 @contextlib.contextmanager
-def mock_ctx(bot: commands.Bot = None):
+def mock_ctx(bot: commands.Bot | None = None):
     ctx = mock.MagicMock(name='ctx')
 
     standard_mocks = []

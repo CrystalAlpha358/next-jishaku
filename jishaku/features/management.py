@@ -19,8 +19,9 @@ import traceback
 import typing
 from urllib.parse import urlencode
 
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord import application_command
+from nextcord.ext import commands
 
 from jishaku.features.baseclass import Feature
 from jishaku.flags import Flags
@@ -59,7 +60,7 @@ class ManagementFeature(Feature):
             )
 
             try:
-                await discord.utils.maybe_coroutine(method, extension)
+                await nextcord.utils.maybe_coroutine(method, extension)
             except Exception as exc:  # pylint: disable=broad-except
                 if isinstance(exc, commands.ExtensionFailed) and exc.__cause__:
                     cause = exc.__cause__
@@ -92,7 +93,7 @@ class ManagementFeature(Feature):
 
         for extension in itertools.chain(*extensions):
             try:
-                await discord.utils.maybe_coroutine(self.bot.unload_extension, extension)
+                await nextcord.utils.maybe_coroutine(self.bot.unload_extension, extension)
             except Exception as exc:  # pylint: disable=broad-except
                 traceback_data = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__, 2))
 
@@ -126,7 +127,7 @@ class ManagementFeature(Feature):
         """
 
         scopes = ('bot', 'applications.commands')
-        permissions = discord.Permissions()
+        permissions = nextcord.Permissions()
 
         for perm in perms:
             if perm not in dict(permissions):
@@ -213,11 +214,14 @@ class ManagementFeature(Feature):
         paginator = commands.Paginator(prefix='', suffix='')
 
         guilds_set: typing.Set[typing.Optional[int]] = set()
+        all_commands = self.bot.get_all_application_commands()
         for target in targets:
             if target == '$':
                 guilds_set.add(None)
             elif target == '*':
-                guilds_set |= set(self.bot.tree._guild_commands.keys())  # type: ignore  # pylint: disable=protected-access
+                for command in all_commands:
+                    if not command.is_global:
+                        guilds_set |= command.guild_ids
             elif target == '.':
                 if ctx.guild:
                     guilds_set.add(ctx.guild.id)
@@ -237,22 +241,15 @@ class ManagementFeature(Feature):
         guilds.sort(key=lambda g: (g is not None, g))
 
         for guild in guilds:
-            slash_commands = self.bot.tree._get_all_commands(  # type: ignore  # pylint: disable=protected-access
-                guild=discord.Object(guild) if guild else None
-            )
-            translator = getattr(self.bot.tree, 'translator', None)
-            needs_dpy_2_4_signature_changes = discord.version_info.major >= 2 and discord.version_info.minor >= 4
-
-            if needs_dpy_2_4_signature_changes:
-                if translator:
-                    payload = [await command.get_translated_payload(self.bot.tree, translator) for command in slash_commands]
-                else:
-                    payload = [command.to_dict(self.bot.tree) for command in slash_commands]
+            if guild is None:
+                slash_commands = self.bot.get_application_commands(rollout=True)
             else:
-                if translator:
-                    payload = [await command.get_translated_payload(translator) for command in slash_commands]
-                else:
-                    payload = [command.to_dict() for command in slash_commands]
+                slash_commands = list(filter(
+                    lambda command: guild in command.guild_ids,  # pylint: disable=cell-var-from-loop
+                    all_commands
+                ))
+
+            payload: list[typing.Any] = [command.get_payload(guild) for command in slash_commands]
 
             try:
                 if guild is None:
@@ -260,12 +257,10 @@ class ManagementFeature(Feature):
                 else:
                     data = await self.bot.http.bulk_upsert_guild_commands(self.bot.application_id, guild, payload=payload)
 
-                synced = [
-                    discord.app_commands.AppCommand(data=d, state=ctx._state)  # type: ignore  # pylint: disable=protected-access,no-member
-                    for d in data
-                ]
+                # It behaves differently than the original jishaku, but it works.
+                synced = data
 
-            except discord.HTTPException as error:
+            except nextcord.HTTPException as error:
                 # It's diagnosis time
                 error_lines: typing.List[str] = []
                 for line in str(error).split("\n"):
@@ -276,7 +271,7 @@ class ManagementFeature(Feature):
                         if not match:
                             continue
 
-                        pool = slash_commands
+                        pool: typing.Sequence[nextcord.BaseApplicationCommand | application_command.SlashCommandMixin] | None = slash_commands
                         selected_command = None
                         name = ""
                         parts = match.group(1).split('.')
@@ -288,25 +283,25 @@ class ManagementFeature(Feature):
 
                             if pool:
                                 # If the pool exists, this should be a subcommand
-                                selected_command = pool[index]  # type: ignore
-                                name += selected_command.name + " "
+                                selected_command = pool[index]
+                                name += selected_command.qualified_name + " "
 
-                                if hasattr(selected_command, '_children'):  # type: ignore
-                                    pool = list(selected_command._children.values())  # type: ignore  # pylint: disable=protected-access
+                                if isinstance(selected_command, application_command.SlashCommandMixin):
+                                    pool = list(selected_command.children.values())
                                 else:
                                     pool = None
-                            else:
+                            elif isinstance(selected_command, application_command.SlashCommandMixin):
                                 # Otherwise, the pool has been exhausted, and this likely is referring to a parameter
-                                param = list(selected_command._params.keys())[index]  # type: ignore  # pylint: disable=protected-access
+                                param = list(selected_command.options.keys())[index]
                                 name += f"(parameter: {param}) "
 
                         if selected_command:
                             to_inspect: typing.Any = None
 
-                            if hasattr(selected_command, 'callback'):  # type: ignore
-                                to_inspect = selected_command.callback  # type: ignore
-                            elif isinstance(selected_command, commands.Cog):
+                            if isinstance(selected_command, commands.Cog):
                                 to_inspect = type(selected_command)
+                            else:
+                                to_inspect = selected_command.callback
 
                             try:
                                 error_lines.append(''.join([

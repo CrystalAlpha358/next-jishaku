@@ -4,7 +4,7 @@
 jishaku
 ~~~~~~~
 
-A discord.py extension including useful tools for bot development and debugging.
+A nextcord extension including useful tools for bot development and debugging.
 
 :copyright: (c) 2024 Devon (scarletcafe) R
 :copyright: (c) 2025 CrystalAlpha358

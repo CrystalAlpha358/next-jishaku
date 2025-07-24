@@ -14,7 +14,7 @@ The jishaku guild-related commands.
 
 import typing
 
-import discord
+import nextcord
 
 from jishaku.features.baseclass import Feature
 from jishaku.types import ContextA
@@ -39,8 +39,8 @@ class GuildFeature(Feature):
         based on an allow and deny mask.
         """
 
-        allow_p: discord.Permissions = discord.Permissions(allow)
-        deny_p: discord.Permissions = discord.Permissions(deny)
+        allow_p: nextcord.Permissions = nextcord.Permissions(allow)
+        deny_p: nextcord.Permissions = nextcord.Permissions(deny)
 
         # Denies first..
         for key, value in dict(deny_p).items():
@@ -69,8 +69,8 @@ class GuildFeature(Feature):
     async def jsk_permtrace(
         self,
         ctx: ContextA,
-        channel: typing.Union[discord.TextChannel, discord.VoiceChannel],
-        *targets: typing.Union[discord.Member, discord.Role]
+        channel: typing.Union[nextcord.TextChannel, nextcord.VoiceChannel],
+        *targets: typing.Union[nextcord.Member, nextcord.Role]
     ):
         """
         Calculates the source of granted or rejected permissions.
@@ -79,11 +79,11 @@ class GuildFeature(Feature):
         It calculates permissions the same way Discord does, while keeping track of the source.
         """
 
-        member_ids = {target.id: target for target in targets if isinstance(target, discord.Member)}
-        roles: typing.List[discord.Role] = []
+        member_ids = {target.id: target for target in targets if isinstance(target, nextcord.Member)}
+        roles: typing.List[nextcord.Role] = []
 
         for target in targets:
-            if isinstance(target, discord.Member):
+            if isinstance(target, nextcord.Member):
                 roles.extend(list(target.roles))
             else:
                 roles.append(target)
@@ -97,7 +97,7 @@ class GuildFeature(Feature):
 
         if member_ids and channel.guild.owner_id in member_ids:
             # Is owner, has all perms
-            for key in dict(discord.Permissions.all()).keys():
+            for key in dict(nextcord.Permissions.all()).keys():
                 permissions[key] = (True, f"<@{channel.guild.owner_id}> owns the server")
         else:
             # Otherwise, either not a member or not the guild owner, calculate perms manually
@@ -118,7 +118,7 @@ class GuildFeature(Feature):
                 if role.permissions.administrator:
                     is_administrator = True
 
-                    for key in dict(discord.Permissions.all()).keys():
+                    for key in dict(nextcord.Permissions.all()).keys():
                         if not permissions[key][0]:
                             permissions[key] = (True, f"it is granted by Administrator on the server-wide {role.name} permission")
 
@@ -141,10 +141,10 @@ class GuildFeature(Feature):
 
                 role_lookup = {r.id: r for r in roles}
 
-                def is_role(overwrite: discord.abc._Overwrites) -> bool:  # type: ignore
+                def is_role(overwrite: nextcord.abc._Overwrites) -> bool:  # type: ignore
                     return overwrite.is_role()
 
-                def is_member(overwrite: discord.abc._Overwrites) -> bool:  # type: ignore
+                def is_member(overwrite: nextcord.abc._Overwrites) -> bool:  # type: ignore
                     return overwrite.is_member()
 
                 # Denies are applied BEFORE allows, always
@@ -174,7 +174,7 @@ class GuildFeature(Feature):
             "There may be other reasons that persist these permissions even if you change the things displayed."
         )
 
-        embed = discord.Embed(color=0x00FF00, description=description)
+        embed = nextcord.Embed(color=0x00FF00, description=description)
 
         allows: typing.List[str] = []
         denies: typing.List[str] = []
