@@ -90,9 +90,9 @@ class VoiceFeature(Feature):
         guild: nextcord.Guild = ctx.guild  # type: ignore
 
         # give info about the current voice client if there is one
-        voice: nextcord.VoiceProtocol = guild.voice_client  # type: ignore
+        voice = guild.voice_client
 
-        if isinstance(voice, nextcord.VoiceClient):
+        if not voice or isinstance(voice, nextcord.VoiceClient):
             if not voice or not voice.is_connected():
                 return await ctx.send("Not connected.")
 
