@@ -373,6 +373,11 @@ class PythonFeature(Feature):
         if typing.TYPE_CHECKING:
             argument: Codeblock = argument  # type: ignore
 
+        # FIXME: Support for Python >= 3.13
+        if sys.version_info >= (3, 13):
+            await ctx.send("The disassembly function does not support Python 3.13 or later.")
+            return
+
         arg_dict = get_var_dict_from_ctx(ctx, Flags.SCOPE_PREFIX)
 
         async with ReplResponseReactor(ctx.message):
